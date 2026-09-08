@@ -1,441 +1,323 @@
+```html
 <!DOCTYPE html>
-
 <html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-```
-<title>Dashboard ค่าน้ำค่าไฟ</title>
+    <title>Dashboard ค่าน้ำค่าไฟ</title>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<style>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
 
-    * {
-        box-sizing: border-box;
-        font-family: Arial, sans-serif;
-    }
+        body {
+            margin: 0;
+            background: #f5f6fa;
+            padding: 20px;
+        }
 
-    body {
-        margin: 0;
-        background: #f5f6fa;
-        padding: 20px;
-    }
+        .container {
+            max-width: 1100px;
+            margin: auto;
+        }
 
-    .container {
-        max-width: 1100px;
-        margin: auto;
-    }
+        h1 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
 
-    h1 {
-        text-align: center;
-        margin-bottom: 25px;
-    }
+        .card {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
 
-    .card {
-        background: white;
-        padding: 25px;
-        margin-bottom: 20px;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .card h2 {
-        margin-top: 0;
-    }
-
-    .form-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .form-group.full {
-        grid-column: span 2;
-    }
-
-    label {
-        margin-bottom: 6px;
-        font-weight: bold;
-    }
-
-    input,
-    select {
-        width: 100%;
-        padding: 11px;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        font-size: 16px;
-    }
-
-    input:focus,
-    select:focus {
-        outline: none;
-        border-color: #2563eb;
-    }
-
-    .save-btn {
-        width: 100%;
-        margin-top: 20px;
-        padding: 13px;
-        border: none;
-        border-radius: 8px;
-        background: #2563eb;
-        color: white;
-        font-size: 17px;
-        cursor: pointer;
-    }
-
-    .save-btn:hover {
-        background: #1d4ed8;
-    }
-
-    #formMessage {
-        text-align: center;
-        margin-top: 15px;
-        font-weight: bold;
-    }
-
-    canvas {
-        max-height: 450px;
-    }
-
-    @media (max-width: 700px) {
+        .card h2 {
+            margin-top: 0;
+        }
 
         .form-grid {
-            grid-template-columns: 1fr;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
         }
 
         .form-group.full {
-            grid-column: span 1;
+            grid-column: span 2;
         }
 
-    }
+        label {
+            margin-bottom: 6px;
+            font-weight: bold;
+        }
 
-</style>
-```
+        input,
+        select {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
 
+        .save-btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            font-size: 17px;
+            cursor: pointer;
+        }
+
+        .save-btn:hover {
+            background: #1d4ed8;
+        }
+
+        #formMessage {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        canvas {
+            max-height: 450px;
+        }
+
+        @media (max-width: 700px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .form-group.full {
+                grid-column: span 1;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
 <div class="container">
 
-```
-<h1>📊 Dashboard ค่าน้ำและค่าไฟ</h1>
+    <h1>📊 Dashboard ค่าน้ำและค่าไฟ</h1>
 
+    <!-- แบบฟอร์มบันทึกข้อมูล -->
+    <div class="card">
 
-<!-- =========================
-     ฟอร์มบันทึกข้อมูล
-========================== -->
+        <h2>📝 บันทึกข้อมูล</h2>
 
-<div class="card">
+        <form id="dataForm">
 
-    <h2>📝 บันทึกข้อมูล</h2>
+            <div class="form-grid">
 
-    <form id="dataForm">
+                <div class="form-group">
+                    <label for="month">เดือน</label>
 
-        <div class="form-grid">
+                    <select id="month" required>
+                        <option value="">-- เลือกเดือน --</option>
+                        <option value="มกราคม">มกราคม</option>
+                        <option value="กุมภาพันธ์">กุมภาพันธ์</option>
+                        <option value="มีนาคม">มีนาคม</option>
+                        <option value="เมษายน">เมษายน</option>
+                        <option value="พฤษภาคม">พฤษภาคม</option>
+                        <option value="มิถุนายน">มิถุนายน</option>
+                        <option value="กรกฎาคม">กรกฎาคม</option>
+                        <option value="สิงหาคม">สิงหาคม</option>
+                        <option value="กันยายน">กันยายน</option>
+                        <option value="ตุลาคม">ตุลาคม</option>
+                        <option value="พฤศจิกายน">พฤศจิกายน</option>
+                        <option value="ธันวาคม">ธันวาคม</option>
+                    </select>
+                </div>
 
-            <div class="form-group">
+                <div class="form-group">
+                    <label for="year">ปี</label>
 
-                <label for="month">
-                    เดือน
-                </label>
+                    <input
+                        type="number"
+                        id="year"
+                        placeholder="เช่น 2568"
+                        required
+                    >
+                </div>
 
-                <select id="month" required>
+                <div class="form-group">
+                    <label for="water">💧 ค่าน้ำ</label>
 
-                    <option value="">
-                        -- เลือกเดือน --
-                    </option>
+                    <input
+                        type="number"
+                        id="water"
+                        placeholder="กรอกค่าน้ำ"
+                        min="0"
+                        step="0.01"
+                        required
+                    >
+                </div>
 
-                    <option value="มกราคม">
-                        มกราคม
-                    </option>
+                <div class="form-group">
+                    <label for="electricity">⚡ ค่าไฟ</label>
 
-                    <option value="กุมภาพันธ์">
-                        กุมภาพันธ์
-                    </option>
+                    <input
+                        type="number"
+                        id="electricity"
+                        placeholder="กรอกค่าไฟ"
+                        min="0"
+                        step="0.01"
+                        required
+                    >
+                </div>
 
-                    <option value="มีนาคม">
-                        มีนาคม
-                    </option>
+                <div class="form-group full">
+                    <label for="patients">🏥 จำนวนผู้ป่วย</label>
 
-                    <option value="เมษายน">
-                        เมษายน
-                    </option>
-
-                    <option value="พฤษภาคม">
-                        พฤษภาคม
-                    </option>
-
-                    <option value="มิถุนายน">
-                        มิถุนายน
-                    </option>
-
-                    <option value="กรกฎาคม">
-                        กรกฎาคม
-                    </option>
-
-                    <option value="สิงหาคม">
-                        สิงหาคม
-                    </option>
-
-                    <option value="กันยายน">
-                        กันยายน
-                    </option>
-
-                    <option value="ตุลาคม">
-                        ตุลาคม
-                    </option>
-
-                    <option value="พฤศจิกายน">
-                        พฤศจิกายน
-                    </option>
-
-                    <option value="ธันวาคม">
-                        ธันวาคม
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label for="year">
-                    ปี
-                </label>
-
-                <input
-                    type="number"
-                    id="year"
-                    placeholder="เช่น 2568"
-                    required
-                >
+                    <input
+                        type="number"
+                        id="patients"
+                        placeholder="กรอกจำนวนผู้ป่วย"
+                        min="0"
+                        required
+                    >
+                </div>
 
             </div>
 
+            <button type="submit" class="save-btn">
+                💾 บันทึกข้อมูล
+            </button>
 
-            <div class="form-group">
+            <div id="formMessage"></div>
 
-                <label for="water">
-                    💧 ค่าน้ำ
-                </label>
+        </form>
 
-                <input
-                    type="number"
-                    id="water"
-                    placeholder="กรอกค่าน้ำ"
-                    min="0"
-                    step="0.01"
-                    required
-                >
+    </div>
 
-            </div>
+    <!-- กราฟ -->
+    <div class="card">
 
+        <h2>📈 เปรียบเทียบค่าน้ำและค่าไฟแต่ละเดือน</h2>
 
-            <div class="form-group">
+        <canvas id="utilityChart"></canvas>
 
-                <label for="electricity">
-                    ⚡ ค่าไฟ
-                </label>
-
-                <input
-                    type="number"
-                    id="electricity"
-                    placeholder="กรอกค่าไฟ"
-                    min="0"
-                    step="0.01"
-                    required
-                >
-
-            </div>
-
-
-            <div class="form-group full">
-
-                <label for="patients">
-                    🏥 จำนวนผู้ป่วย
-                </label>
-
-                <input
-                    type="number"
-                    id="patients"
-                    placeholder="กรอกจำนวนผู้ป่วย"
-                    min="0"
-                    required
-                >
-
-            </div>
-
-        </div>
-
-
-        <button
-            type="submit"
-            class="save-btn"
-        >
-            💾 บันทึกข้อมูล
-        </button>
-
-        <div id="formMessage"></div>
-
-    </form>
-
-</div>
-
-
-<!-- =========================
-     กราฟ
-========================== -->
-
-<div class="card">
-
-    <h2>📈 เปรียบเทียบค่าน้ำและค่าไฟแต่ละเดือน</h2>
-
-    <canvas id="utilityChart"></canvas>
-
-</div>
-```
+    </div>
 
 </div>
 
 <script>
 
-    // =====================================
-    // ฟอร์มบันทึกข้อมูล
-    // ตอนนี้ยังเป็นการทดสอบ
-    // ยังไม่ได้ส่งไป Google Sheets
-    // =====================================
+document.getElementById("dataForm").addEventListener("submit", function(event) {
 
-    document.getElementById("dataForm").addEventListener("submit", function(event) {
+    event.preventDefault();
 
-        event.preventDefault();
+    const month = document.getElementById("month").value;
+    const year = document.getElementById("year").value;
+    const water = document.getElementById("water").value;
+    const electricity = document.getElementById("electricity").value;
+    const patients = document.getElementById("patients").value;
 
-        const month =
-            document.getElementById("month").value;
+    const message = document.getElementById("formMessage");
 
-        const year =
-            document.getElementById("year").value;
+    message.style.color = "green";
 
-        const water =
-            document.getElementById("water").value;
+    message.textContent =
+        "กรอกข้อมูลสำเร็จ: " +
+        month + " " +
+        year +
+        " | ค่าน้ำ " +
+        water +
+        " | ค่าไฟ " +
+        electricity +
+        " | ผู้ป่วย " +
+        patients;
 
-        const electricity =
-            document.getElementById("electricity").value;
-
-        const patients =
-            document.getElementById("patients").value;
-
-        const message =
-            document.getElementById("formMessage");
-
-
-        // แสดงข้อมูลที่กรอกเพื่อทดสอบ
-        message.style.color = "green";
-
-        message.textContent =
-            "กรอกข้อมูลสำเร็จ: " +
-            month + " " +
-            year +
-            " | ค่าน้ำ " +
-            water +
-            " | ค่าไฟ " +
-            electricity +
-            " | ผู้ป่วย " +
-            patients;
-
-    });
+});
 
 
-    // =====================================
-    // ข้อมูลตัวอย่างสำหรับกราฟ
-    // =====================================
+// ข้อมูลตัวอย่างสำหรับกราฟ
+const months = [
+    "พ.ค. 2568",
+    "มิ.ย. 2568",
+    "ก.ค. 2568",
+    "ส.ค. 2568",
+    "ก.ย. 2568"
+];
 
-    const months = [
-        "พ.ค. 2568",
-        "มิ.ย. 2568",
-        "ก.ค. 2568",
-        "ส.ค. 2568",
-        "ก.ย. 2568"
-    ];
+const water = [
+    100,
+    120,
+    110,
+    130,
+    125
+];
 
+const electricity = [
+    356,
+    380,
+    410,
+    395,
+    430
+];
 
-    const water = [
-        100,
-        120,
-        110,
-        130,
-        125
-    ];
+const ctx = document.getElementById("utilityChart");
 
+new Chart(ctx, {
 
-    const electricity = [
-        356,
-        380,
-        410,
-        395,
-        430
-    ];
+    type: "line",
 
+    data: {
 
-    const ctx =
-        document.getElementById("utilityChart");
+        labels: months,
 
+        datasets: [
 
-    new Chart(ctx, {
+            {
+                label: "ค่าน้ำ",
+                data: water,
+                tension: 0.3
+            },
 
-        type: "line",
+            {
+                label: "ค่าไฟ",
+                data: electricity,
+                tension: 0.3
+            }
 
-        data: {
+        ]
 
-            labels: months,
+    },
 
-            datasets: [
+    options: {
 
-                {
-                    label: "ค่าน้ำ",
-                    data: water,
-                    tension: 0.3
-                },
+        responsive: true,
 
-                {
-                    label: "ค่าไฟ",
-                    data: electricity,
-                    tension: 0.3
-                }
+        scales: {
 
-            ]
-
-        },
-
-        options: {
-
-            responsive: true,
-
-            scales: {
-
-                y: {
-
-                    beginAtZero: true
-
-                }
-
+            y: {
+                beginAtZero: true
             }
 
         }
 
-    });
+    }
+
+});
 
 </script>
 
 </body>
 </html>
+```
