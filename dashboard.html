@@ -1,347 +1,366 @@
-```html
 <!DOCTYPE html>
+
 <html lang="th">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Dashboard ค่าน้ำค่าไฟ</title>
+```
+<title>Dashboard ค่าน้ำค่าไฟ</title>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <style>
-        * {
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
+<style>
+    * {
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
 
-        body {
-            margin: 0;
-            background: #f2f5f9;
-            color: #333;
-        }
+    body {
+        margin: 0;
+        background: #f2f5f9;
+        color: #333;
+    }
 
-        .container {
-            max-width: 1200px;
-            margin: auto;
-            padding: 30px 20px;
-        }
+    .container {
+        max-width: 1200px;
+        margin: auto;
+        padding: 30px 20px;
+    }
 
-        h1 {
-            text-align: center;
-            margin-bottom: 30px;
-        }
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+    }
 
-        .card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            margin-bottom: 25px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-        }
+    .card {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
 
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: bold;
+    }
+
+    input,
+    select {
+        width: 100%;
+        padding: 11px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 16px;
+    }
+
+    button {
+        border: none;
+        border-radius: 8px;
+        padding: 12px 20px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    .save-btn {
+        width: 100%;
+        margin-top: 20px;
+        background: #2563eb;
+        color: white;
+    }
+
+    .save-btn:hover {
+        background: #1d4ed8;
+    }
+
+    .logout-btn {
+        background: #dc2626;
+        color: white;
+        float: right;
+    }
+
+    #message {
+        text-align: center;
+        margin-top: 15px;
+        font-weight: bold;
+    }
+
+    .chart-container {
+        position: relative;
+        height: 400px;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    th,
+    td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: center;
+    }
+
+    th {
+        background: #2563eb;
+        color: white;
+    }
+
+    tr:nth-child(even) {
+        background: #f8fafc;
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .pagination button {
+        background: #2563eb;
+        color: white;
+    }
+
+    .pagination button:disabled {
+        background: #aaa;
+        cursor: not-allowed;
+    }
+
+    #pageInfo {
+        font-weight: bold;
+    }
+
+    /* ซ่อน Honeypot */
+    .honeypot {
+        display: none;
+    }
+
+    /* จำนวนผู้ป่วยเกินกำหนด */
+    .patient-high {
+        background: #fee2e2 !important;
+        color: #dc2626;
+        font-weight: bold;
+    }
+
+    /* จำนวนผู้ป่วยปกติ */
+    .patient-normal {
+        background: #dcfce7 !important;
+        color: #15803d;
+        font-weight: bold;
+    }
+
+    @media (max-width: 700px) {
         .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: bold;
-        }
-
-        input,
-        select {
-            width: 100%;
-            padding: 11px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-
-        button {
-            border: none;
-            border-radius: 8px;
-            padding: 12px 20px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .save-btn {
-            width: 100%;
-            margin-top: 20px;
-            background: #2563eb;
-            color: white;
-        }
-
-        .save-btn:hover {
-            background: #1d4ed8;
-        }
-
-        .logout-btn {
-            background: #dc2626;
-            color: white;
-            float: right;
-        }
-
-        #message {
-            text-align: center;
-            margin-top: 15px;
-            font-weight: bold;
+            grid-template-columns: 1fr;
         }
 
         .chart-container {
-            position: relative;
-            height: 400px;
+            height: 300px;
         }
+    }
+</style>
+```
 
-        .table-container {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        th,
-        td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-        }
-
-        th {
-            background: #2563eb;
-            color: white;
-        }
-
-        tr:nth-child(even) {
-            background: #f8fafc;
-        }
-
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .pagination button {
-            background: #2563eb;
-            color: white;
-        }
-
-        .pagination button:disabled {
-            background: #aaa;
-            cursor: not-allowed;
-        }
-
-        #pageInfo {
-            font-weight: bold;
-        }
-
-        /* ซ่อน Honeypot */
-        .honeypot {
-            display: none;
-        }
-
-        @media (max-width: 700px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .chart-container {
-                height: 300px;
-            }
-        }
-    </style>
 </head>
 
 <body>
 
 <div class="container">
 
-    <button class="logout-btn" onclick="logout()">
-        ออกจากระบบ
-    </button>
+```
+<button class="logout-btn" onclick="logout()">
+    ออกจากระบบ
+</button>
 
-    <h1>💧⚡ Dashboard ค่าน้ำค่าไฟ</h1>
+<h1>💧⚡ Dashboard ค่าน้ำค่าไฟ</h1>
 
-    <!-- FORM -->
-    <div class="card">
+<!-- FORM -->
+<div class="card">
 
-        <h2>📝 บันทึกข้อมูล</h2>
+    <h2>📝 บันทึกข้อมูล</h2>
 
-        <form id="dataForm">
+    <form id="dataForm">
 
-            <div class="form-grid">
+        <div class="form-grid">
 
-                <div>
-                    <label for="month">เดือน</label>
+            <div>
+                <label for="month">เดือน</label>
 
-                    <select id="month" required>
-                        <option value="">-- เลือกเดือน --</option>
-                        <option value="มกราคม">มกราคม</option>
-                        <option value="กุมภาพันธ์">กุมภาพันธ์</option>
-                        <option value="มีนาคม">มีนาคม</option>
-                        <option value="เมษายน">เมษายน</option>
-                        <option value="พฤษภาคม">พฤษภาคม</option>
-                        <option value="มิถุนายน">มิถุนายน</option>
-                        <option value="กรกฎาคม">กรกฎาคม</option>
-                        <option value="สิงหาคม">สิงหาคม</option>
-                        <option value="กันยายน">กันยายน</option>
-                        <option value="ตุลาคม">ตุลาคม</option>
-                        <option value="พฤศจิกายน">พฤศจิกายน</option>
-                        <option value="ธันวาคม">ธันวาคม</option>
-                    </select>
-                </div>
-
-                <div>
-                    <label for="year">ปี</label>
-
-                    <input
-                        type="number"
-                        id="year"
-                        placeholder="เช่น 2569"
-                        required
-                    >
-                </div>
-
-                <div>
-                    <label for="water">ค่าน้ำ (บาท)</label>
-
-                    <input
-                        type="number"
-                        id="water"
-                        min="0"
-                        required
-                    >
-                </div>
-
-                <div>
-                    <label for="electricity">ค่าไฟ (บาท)</label>
-
-                    <input
-                        type="number"
-                        id="electricity"
-                        min="0"
-                        required
-                    >
-                </div>
-
-                <div>
-                    <label for="patients">จำนวนผู้ป่วย</label>
-
-                    <input
-                        type="number"
-                        id="patients"
-                        min="0"
-                        required
-                    >
-                </div>
-
+                <select id="month" required>
+                    <option value="">-- เลือกเดือน --</option>
+                    <option value="มกราคม">มกราคม</option>
+                    <option value="กุมภาพันธ์">กุมภาพันธ์</option>
+                    <option value="มีนาคม">มีนาคม</option>
+                    <option value="เมษายน">เมษายน</option>
+                    <option value="พฤษภาคม">พฤษภาคม</option>
+                    <option value="มิถุนายน">มิถุนายน</option>
+                    <option value="กรกฎาคม">กรกฎาคม</option>
+                    <option value="สิงหาคม">สิงหาคม</option>
+                    <option value="กันยายน">กันยายน</option>
+                    <option value="ตุลาคม">ตุลาคม</option>
+                    <option value="พฤศจิกายน">พฤศจิกายน</option>
+                    <option value="ธันวาคม">ธันวาคม</option>
+                </select>
             </div>
 
-
-            <!-- HONEYPOT -->
-            <div class="honeypot">
-                <label for="website">Website</label>
+            <div>
+                <label for="year">ปี</label>
 
                 <input
-                    type="text"
-                    id="website"
-                    name="website"
-                    tabindex="-1"
-                    autocomplete="off"
+                    type="number"
+                    id="year"
+                    placeholder="เช่น 2569"
+                    required
                 >
             </div>
 
+            <div>
+                <label for="water">ค่าน้ำ (บาท)</label>
 
-            <button type="submit" class="save-btn">
-                💾 บันทึกข้อมูล
-            </button>
+                <input
+                    type="number"
+                    id="water"
+                    min="0"
+                    required
+                >
+            </div>
 
-        </form>
+            <div>
+                <label for="electricity">ค่าไฟ (บาท)</label>
 
-        <div id="message"></div>
+                <input
+                    type="number"
+                    id="electricity"
+                    min="0"
+                    required
+                >
+            </div>
 
-    </div>
+            <div>
+                <label for="patients">จำนวนผู้ป่วย</label>
 
-
-    <!-- CHART -->
-    <div class="card">
-
-        <h2>📊 กราฟค่าน้ำค่าไฟ</h2>
-
-        <div class="chart-container">
-            <canvas id="myChart"></canvas>
-        </div>
-
-    </div>
-
-
-    <!-- TABLE -->
-    <div class="card">
-
-        <h2>📋 ตารางข้อมูล</h2>
-
-        <div class="table-container">
-
-            <table>
-
-                <thead>
-                    <tr>
-                        <th>เดือน</th>
-                        <th>ปี</th>
-                        <th>ค่าน้ำ</th>
-                        <th>ค่าไฟ</th>
-                        <th>ผู้ป่วย</th>
-                        <th>วันที่บันทึก</th>
-                    </tr>
-                </thead>
-
-                <tbody id="dataTable">
-                    <tr>
-                        <td colspan="6">
-                            กำลังโหลดข้อมูล...
-                        </td>
-                    </tr>
-                </tbody>
-
-            </table>
+                <input
+                    type="number"
+                    id="patients"
+                    min="0"
+                    required
+                >
+            </div>
 
         </div>
 
-        <div class="pagination">
+        <!-- HONEYPOT -->
+        <div class="honeypot">
+            <label for="website">Website</label>
 
-            <button id="prevBtn" onclick="previousPage()">
-                ◀ ก่อนหน้า
-            </button>
-
-            <span id="pageInfo">
-                หน้า 1
-            </span>
-
-            <button id="nextBtn" onclick="nextPage()">
-                ถัดไป ▶
-            </button>
-
+            <input
+                type="text"
+                id="website"
+                name="website"
+                tabindex="-1"
+                autocomplete="off"
+            >
         </div>
 
+        <button type="submit" class="save-btn">
+            💾 บันทึกข้อมูล
+        </button>
+
+    </form>
+
+    <div id="message"></div>
+
+</div>
+
+
+<!-- CHART -->
+<div class="card">
+
+    <h2>📊 กราฟค่าน้ำค่าไฟ</h2>
+
+    <div class="chart-container">
+        <canvas id="myChart"></canvas>
     </div>
 
 </div>
 
 
+<!-- TABLE -->
+<div class="card">
+
+    <h2>📋 ตารางข้อมูล</h2>
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>เดือน</th>
+                    <th>ปี</th>
+                    <th>ค่าน้ำ</th>
+                    <th>ค่าไฟ</th>
+                    <th>ผู้ป่วย</th>
+                    <th>วันที่บันทึก</th>
+                </tr>
+            </thead>
+
+            <tbody id="dataTable">
+                <tr>
+                    <td colspan="6">
+                        กำลังโหลดข้อมูล...
+                    </td>
+                </tr>
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <div class="pagination">
+
+        <button id="prevBtn" onclick="previousPage()">
+            ◀ ก่อนหน้า
+        </button>
+
+        <span id="pageInfo">
+            หน้า 1
+        </span>
+
+        <button id="nextBtn" onclick="nextPage()">
+            ถัดไป ▶
+        </button>
+
+    </div>
+
+</div>
+```
+
+</div>
+
 <script>
 
 const API_URL =
     "https://script.google.com/macros/s/AKfycbyIS-MaYfKEO5OoSFhxqVDaPkmthAiwt0j4WsFajpzd80tKsKLMHiD26pyZmfQcE7F-wQ/exec";
+
+/* ค่าผู้ป่วยสูงสุด */
+const MAX_PATIENTS = 30;
 
 let allData = [];
 let currentPage = 1;
@@ -416,12 +435,21 @@ function displayTable() {
         const tr =
             document.createElement("tr");
 
+        const patientClass =
+            Number(row[5]) > MAX_PATIENTS
+                ? "patient-high"
+                : "patient-normal";
+
         tr.innerHTML = `
             <td>${row[1] || ""}</td>
             <td>${row[2] || ""}</td>
             <td>${formatNumber(row[3])}</td>
             <td>${formatNumber(row[4])}</td>
-            <td>${row[5] || ""}</td>
+
+            <td class="${patientClass}">
+                ${row[5] || ""}
+            </td>
+
             <td>${formatDate(row[6])}</td>
         `;
 
@@ -582,6 +610,7 @@ document
         const message =
             document.getElementById("message");
 
+
         /* ตรวจสอบ Honeypot */
 
         const honeypot =
@@ -722,4 +751,3 @@ loadData();
 
 </body>
 </html>
-```
