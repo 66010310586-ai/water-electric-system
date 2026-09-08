@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+```
 <title>Dashboard ค่าน้ำค่าไฟ</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -150,15 +151,15 @@
         display: none;
     }
 
-    /* จำนวนผู้ป่วยเกินกำหนด */
-    .patient-high {
+    /* จำนวนผู้ใช้เกินกำหนด */
+    .user-high {
         background: #fee2e2 !important;
         color: #dc2626;
         font-weight: bold;
     }
 
-    /* จำนวนผู้ป่วยปกติ */
-    .patient-normal {
+    /* จำนวนผู้ใช้ปกติ */
+    .user-normal {
         background: #dcfce7 !important;
         color: #15803d;
         font-weight: bold;
@@ -174,6 +175,7 @@
         }
     }
 </style>
+```
 
 </head>
 
@@ -181,11 +183,13 @@
 
 <div class="container">
 
+```
 <button class="logout-btn" onclick="logout()">
     ออกจากระบบ
 </button>
 
 <h1>💧⚡ Dashboard ค่าน้ำค่าไฟ</h1>
+
 
 <!-- FORM -->
 <div class="card">
@@ -216,6 +220,7 @@
                 </select>
             </div>
 
+
             <div>
                 <label for="year">ปี</label>
 
@@ -226,6 +231,7 @@
                     required
                 >
             </div>
+
 
             <div>
                 <label for="water">ค่าน้ำ (บาท)</label>
@@ -238,6 +244,7 @@
                 >
             </div>
 
+
             <div>
                 <label for="electricity">ค่าไฟ (บาท)</label>
 
@@ -249,12 +256,13 @@
                 >
             </div>
 
+
             <div>
-                <label for="patients">จำนวนผู้ใช้น้ำใช้ไฟ</label>
+                <label for="users">จำนวนผู้ใช้</label>
 
                 <input
                     type="number"
-                    id="patients"
+                    id="users"
                     min="0"
                     required
                 >
@@ -262,8 +270,10 @@
 
         </div>
 
+
         <!-- HONEYPOT -->
         <div class="honeypot">
+
             <label for="website">Website</label>
 
             <input
@@ -273,7 +283,9 @@
                 tabindex="-1"
                 autocomplete="off"
             >
+
         </div>
+
 
         <button type="submit" class="save-btn">
             💾 บันทึกข้อมูล
@@ -292,7 +304,9 @@
     <h2>📊 กราฟค่าน้ำค่าไฟ</h2>
 
     <div class="chart-container">
+
         <canvas id="myChart"></canvas>
+
     </div>
 
 </div>
@@ -308,28 +322,37 @@
         <table>
 
             <thead>
+
                 <tr>
                     <th>เดือน</th>
                     <th>ปี</th>
                     <th>ค่าน้ำ</th>
                     <th>ค่าไฟ</th>
-                    <th>ผู้ใช้น้ำใช้ไฟ</th>
+                    <th>จำนวนผู้ใช้</th>
                     <th>วันที่บันทึก</th>
                 </tr>
+
             </thead>
 
+
             <tbody id="dataTable">
+
                 <tr>
+
                     <td colspan="6">
                         กำลังโหลดข้อมูล...
                     </td>
+
                 </tr>
+
             </tbody>
 
         </table>
 
     </div>
 
+
+    <!-- PAGINATION -->
     <div class="pagination">
 
         <button id="prevBtn" onclick="previousPage()">
@@ -347,21 +370,29 @@
     </div>
 
 </div>
+```
 
 </div>
 
 <script>
 
+
 const API_URL =
     "https://script.google.com/macros/s/AKfycbyIS-MaYfKEO5OoSFhxqVDaPkmthAiwt0j4WsFajpzd80tKsKLMHiD26pyZmfQcE7F-wQ/exec";
 
-/* ค่าผู้ป่วยสูงสุด */
-const MAX_PATIENTS = 30;
+
+/* จำนวนผู้ใช้สูงสุด */
+const MAX_USERS = 30;
+
 
 let allData = [];
+
 let currentPage = 1;
+
 const rowsPerPage = 5;
+
 let myChart = null;
+
 
 
 /* โหลดข้อมูล */
@@ -397,6 +428,7 @@ function loadData() {
 }
 
 
+
 /* ตาราง */
 
 function displayTable() {
@@ -405,6 +437,7 @@ function displayTable() {
         document.getElementById("dataTable");
 
     table.innerHTML = "";
+
 
     if (allData.length === 0) {
 
@@ -417,8 +450,10 @@ function displayTable() {
 
     }
 
+
     const start =
         (currentPage - 1) * rowsPerPage;
+
 
     const pageData =
         allData.slice(
@@ -426,36 +461,47 @@ function displayTable() {
             start + rowsPerPage
         );
 
+
     pageData.forEach(row => {
 
         const tr =
             document.createElement("tr");
 
-        const patientClass =
-            Number(row[5]) > MAX_PATIENTS
-                ? "patient-high"
-                : "patient-normal";
+
+        const userClass =
+            Number(row[5]) > MAX_USERS
+                ? "user-high"
+                : "user-normal";
+
 
         tr.innerHTML = `
+
             <td>${row[1] || ""}</td>
+
             <td>${row[2] || ""}</td>
+
             <td>${formatNumber(row[3])}</td>
+
             <td>${formatNumber(row[4])}</td>
 
-            <td class="${patientClass}">
+            <td class="${userClass}">
                 ${row[5] || ""}
             </td>
 
             <td>${formatDate(row[6])}</td>
+
         `;
+
 
         table.appendChild(tr);
 
     });
 
+
     updatePagination();
 
 }
+
 
 
 /* Pagination */
@@ -468,19 +514,23 @@ function updatePagination() {
             Math.ceil(allData.length / rowsPerPage)
         );
 
+
     document.getElementById("pageInfo").textContent =
         "หน้า " +
         currentPage +
         " / " +
         totalPages;
 
+
     document.getElementById("prevBtn").disabled =
         currentPage <= 1;
+
 
     document.getElementById("nextBtn").disabled =
         currentPage >= totalPages;
 
 }
+
 
 
 function previousPage() {
@@ -496,10 +546,12 @@ function previousPage() {
 }
 
 
+
 function nextPage() {
 
     const totalPages =
         Math.ceil(allData.length / rowsPerPage);
+
 
     if (currentPage < totalPages) {
 
@@ -512,13 +564,17 @@ function nextPage() {
 }
 
 
+
 /* กราฟ */
 
 function createChart() {
 
     const labels = [];
+
     const waterData = [];
+
     const electricityData = [];
+
 
     allData.forEach(row => {
 
@@ -528,12 +584,264 @@ function createChart() {
             (row[2] || "")
         );
 
-        waterData.push(Number(row[3]) || 0);
 
-        electricityData.push(Number(row[4]) || 0);
+        waterData.push(
+            Number(row[3]) || 0
+        );
+
+
+        electricityData.push(
+            Number(row[4]) || 0
+        );
 
     });
 
+
     const ctx =
         document
-            .getElement
+            .getElementById("myChart")
+            .getContext("2d");
+
+
+    if (myChart) {
+
+        myChart.destroy();
+
+    }
+
+
+    myChart = new Chart(ctx, {
+
+        type: "bar",
+
+        data: {
+
+            labels: labels,
+
+            datasets: [
+
+                {
+                    label: "ค่าน้ำ (บาท)",
+                    data: waterData
+                },
+
+                {
+                    label: "ค่าไฟ (บาท)",
+                    data: electricityData
+                }
+
+            ]
+
+        },
+
+        options: {
+
+            responsive: true,
+
+            maintainAspectRatio: false,
+
+            scales: {
+
+                y: {
+
+                    beginAtZero: true,
+
+                    title: {
+
+                        display: true,
+
+                        text: "จำนวนเงิน (บาท)"
+
+                    }
+
+                }
+
+            }
+
+        }
+
+    });
+
+}
+
+
+
+/* จัดรูปแบบตัวเลข */
+
+function formatNumber(value) {
+
+    if (
+        value === "" ||
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return Number(value).toLocaleString("th-TH");
+
+}
+
+
+
+/* จัดรูปแบบวันที่ */
+
+function formatDate(value) {
+
+    if (!value) {
+
+        return "";
+
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if (isNaN(date.getTime())) {
+
+        return value;
+
+    }
+
+
+    return date.toLocaleString("th-TH");
+
+}
+
+
+
+/* บันทึกข้อมูล */
+
+document
+    .getElementById("dataForm")
+    .addEventListener("submit", function(event) {
+
+        event.preventDefault();
+
+
+        const message =
+            document.getElementById("message");
+
+
+        /* ตรวจ Honeypot */
+
+        const honeypot =
+            document.getElementById("website").value;
+
+
+        if (honeypot !== "") {
+
+            message.style.color = "red";
+
+            message.textContent =
+                "❌ ตรวจพบการส่งข้อมูลที่ไม่ถูกต้อง";
+
+            return;
+
+        }
+
+
+        const data = {
+
+            month:
+                document.getElementById("month").value,
+
+            year:
+                document.getElementById("year").value,
+
+            water:
+                document.getElementById("water").value,
+
+            electricity:
+                document.getElementById("electricity").value,
+
+            patients:
+                document.getElementById("users").value
+
+        };
+
+
+        message.style.color = "#2563eb";
+
+        message.textContent =
+            "⏳ กำลังบันทึกข้อมูล...";
+
+
+        fetch(API_URL, {
+
+            method: "POST",
+
+            mode: "no-cors",
+
+            headers: {
+
+                "Content-Type":
+                    "text/plain;charset=utf-8"
+
+            },
+
+            body:
+                JSON.stringify(data)
+
+        })
+
+        .then(() => {
+
+            message.style.color = "green";
+
+            message.textContent =
+                "✅ บันทึกข้อมูลสำเร็จ";
+
+
+            document
+                .getElementById("dataForm")
+                .reset();
+
+
+            setTimeout(() => {
+
+                loadData();
+
+            }, 1000);
+
+        })
+
+        .catch(error => {
+
+            console.error(error);
+
+            message.style.color = "red";
+
+            message.textContent =
+                "❌ เกิดข้อผิดพลาดในการบันทึกข้อมูล";
+
+        });
+
+    });
+
+
+
+/* Logout */
+
+function logout() {
+
+    window.location.href =
+        "index.html";
+
+}
+
+
+
+/* เริ่มโหลดข้อมูล */
+
+loadData();
+
+</script>
+
+</body>
+</html>
