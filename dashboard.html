@@ -1,6 +1,7 @@
 ```html
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
+
         * {
             box-sizing: border-box;
             font-family: Arial, sans-serif;
@@ -88,6 +90,11 @@
             background: #1d4ed8;
         }
 
+        .save-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
         #formMessage {
             text-align: center;
             margin-top: 15px;
@@ -99,6 +106,7 @@
         }
 
         @media (max-width: 700px) {
+
             .form-grid {
                 grid-template-columns: 1fr;
             }
@@ -106,9 +114,13 @@
             .form-group.full {
                 grid-column: span 1;
             }
+
         }
+
     </style>
+
 </head>
+
 
 <body>
 
@@ -116,7 +128,9 @@
 
     <h1>📊 Dashboard ค่าน้ำและค่าไฟ</h1>
 
+
     <!-- แบบฟอร์มบันทึกข้อมูล -->
+
     <div class="card">
 
         <h2>📝 บันทึกข้อมูล</h2>
@@ -125,11 +139,19 @@
 
             <div class="form-grid">
 
+
                 <div class="form-group">
-                    <label for="month">เดือน</label>
+
+                    <label for="month">
+                        เดือน
+                    </label>
 
                     <select id="month" required>
-                        <option value="">-- เลือกเดือน --</option>
+
+                        <option value="">
+                            -- เลือกเดือน --
+                        </option>
+
                         <option value="มกราคม">มกราคม</option>
                         <option value="กุมภาพันธ์">กุมภาพันธ์</option>
                         <option value="มีนาคม">มีนาคม</option>
@@ -142,22 +164,33 @@
                         <option value="ตุลาคม">ตุลาคม</option>
                         <option value="พฤศจิกายน">พฤศจิกายน</option>
                         <option value="ธันวาคม">ธันวาคม</option>
+
                     </select>
+
                 </div>
 
+
                 <div class="form-group">
-                    <label for="year">ปี</label>
+
+                    <label for="year">
+                        ปี
+                    </label>
 
                     <input
                         type="number"
                         id="year"
-                        placeholder="เช่น 2568"
+                        placeholder="เช่น 2569"
                         required
                     >
+
                 </div>
 
+
                 <div class="form-group">
-                    <label for="water">💧 ค่าน้ำ</label>
+
+                    <label for="water">
+                        💧 ค่าน้ำ
+                    </label>
 
                     <input
                         type="number"
@@ -167,10 +200,15 @@
                         step="0.01"
                         required
                     >
+
                 </div>
 
+
                 <div class="form-group">
-                    <label for="electricity">⚡ ค่าไฟ</label>
+
+                    <label for="electricity">
+                        ⚡ ค่าไฟ
+                    </label>
 
                     <input
                         type="number"
@@ -180,10 +218,15 @@
                         step="0.01"
                         required
                     >
+
                 </div>
 
+
                 <div class="form-group full">
-                    <label for="patients">🏥 จำนวนผู้ป่วย</label>
+
+                    <label for="patients">
+                        🏥 จำนวนผู้ป่วย
+                    </label>
 
                     <input
                         type="number"
@@ -192,13 +235,20 @@
                         min="0"
                         required
                     >
+
                 </div>
 
             </div>
 
-            <button type="submit" class="save-btn">
+
+            <button
+                type="submit"
+                class="save-btn"
+                id="saveButton"
+            >
                 💾 บันทึกข้อมูล
             </button>
+
 
             <div id="formMessage"></div>
 
@@ -206,10 +256,14 @@
 
     </div>
 
+
     <!-- กราฟ -->
+
     <div class="card">
 
-        <h2>📈 เปรียบเทียบค่าน้ำและค่าไฟแต่ละเดือน</h2>
+        <h2>
+            📈 เปรียบเทียบค่าน้ำและค่าไฟแต่ละเดือน
+        </h2>
 
         <canvas id="utilityChart"></canvas>
 
@@ -217,107 +271,363 @@
 
 </div>
 
+
+
 <script>
 
-document.getElementById("dataForm").addEventListener("submit", function(event) {
 
-    event.preventDefault();
+// =====================================================
+// Google Apps Script Web App URL
+// =====================================================
 
-    const month = document.getElementById("month").value;
-    const year = document.getElementById("year").value;
-    const water = document.getElementById("water").value;
-    const electricity = document.getElementById("electricity").value;
-    const patients = document.getElementById("patients").value;
-
-    const message = document.getElementById("formMessage");
-
-    message.style.color = "green";
-
-    message.textContent =
-        "กรอกข้อมูลสำเร็จ: " +
-        month + " " +
-        year +
-        " | ค่าน้ำ " +
-        water +
-        " | ค่าไฟ " +
-        electricity +
-        " | ผู้ป่วย " +
-        patients;
-
-});
+const API_URL =
+    "https://script.google.com/macros/s/AKfycbyPtREbr-BGM_Xkg9wxm2NotDNa4msHIlFkqzCrH4OsoPq2hLZifpwi4mMIqX5yTH5z/exec";
 
 
-// ข้อมูลตัวอย่างสำหรับกราฟ
-const months = [
-    "พ.ค. 2568",
-    "มิ.ย. 2568",
-    "ก.ค. 2568",
-    "ส.ค. 2568",
-    "ก.ย. 2568"
-];
 
-const water = [
-    100,
-    120,
-    110,
-    130,
-    125
-];
+// =====================================================
+// ตัวแปรกราฟ
+// =====================================================
 
-const electricity = [
-    356,
-    380,
-    410,
-    395,
-    430
-];
+let utilityChart;
 
-const ctx = document.getElementById("utilityChart");
 
-new Chart(ctx, {
 
-    type: "line",
+// =====================================================
+// โหลดข้อมูลจาก Google Sheets
+// =====================================================
 
-    data: {
+async function loadData() {
 
-        labels: months,
+    try {
 
-        datasets: [
+        const response =
+            await fetch(API_URL);
 
-            {
-                label: "ค่าน้ำ",
-                data: water,
-                tension: 0.3
-            },
+        const data =
+            await response.json();
 
-            {
-                label: "ค่าไฟ",
-                data: electricity,
-                tension: 0.3
-            }
 
-        ]
+        console.log("ข้อมูลจาก Google Sheets:", data);
 
-    },
 
-    options: {
+        // ถ้ายังไม่มีข้อมูล
 
-        responsive: true,
+        if (!data || data.length <= 1) {
 
-        scales: {
+            createChart([], [], []);
 
-            y: {
-                beginAtZero: true
-            }
-
+            return;
         }
+
+
+        // ตัดหัวตารางออก
+
+        const rows =
+            data.slice(1);
+
+
+        const months = [];
+
+        const water = [];
+
+        const electricity = [];
+
+
+        rows.forEach(function(row) {
+
+            if (row.length >= 6) {
+
+                months.push(
+                    row[1] + " " + row[2]
+                );
+
+                water.push(
+                    Number(row[3]) || 0
+                );
+
+                electricity.push(
+                    Number(row[4]) || 0
+                );
+
+            }
+
+        });
+
+
+        createChart(
+            months,
+            water,
+            electricity
+        );
+
+
+    } catch (error) {
+
+        console.error(
+            "ไม่สามารถโหลดข้อมูล:",
+            error
+        );
+
+        createChart([], [], []);
 
     }
 
-});
+}
+
+
+
+// =====================================================
+// สร้างกราฟ
+// =====================================================
+
+function createChart(
+    months,
+    water,
+    electricity
+) {
+
+
+    const ctx =
+        document.getElementById(
+            "utilityChart"
+        );
+
+
+    if (utilityChart) {
+
+        utilityChart.destroy();
+
+    }
+
+
+    utilityChart =
+        new Chart(ctx, {
+
+            type: "line",
+
+            data: {
+
+                labels: months,
+
+                datasets: [
+
+                    {
+
+                        label: "ค่าน้ำ",
+
+                        data: water,
+
+                        tension: 0.3
+
+                    },
+
+                    {
+
+                        label: "ค่าไฟ",
+
+                        data: electricity,
+
+                        tension: 0.3
+
+                    }
+
+                ]
+
+            },
+
+
+            options: {
+
+                responsive: true,
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true
+
+                    }
+
+                }
+
+            }
+
+        });
+
+}
+
+
+
+// =====================================================
+// บันทึกข้อมูลลง Google Sheets
+// =====================================================
+
+document
+    .getElementById("dataForm")
+    .addEventListener(
+        "submit",
+        async function(event) {
+
+
+            event.preventDefault();
+
+
+            const month =
+                document.getElementById(
+                    "month"
+                ).value;
+
+
+            const year =
+                document.getElementById(
+                    "year"
+                ).value;
+
+
+            const water =
+                document.getElementById(
+                    "water"
+                ).value;
+
+
+            const electricity =
+                document.getElementById(
+                    "electricity"
+                ).value;
+
+
+            const patients =
+                document.getElementById(
+                    "patients"
+                ).value;
+
+
+            const message =
+                document.getElementById(
+                    "formMessage"
+                );
+
+
+            const saveButton =
+                document.getElementById(
+                    "saveButton"
+                );
+
+
+            // แสดงสถานะกำลังบันทึก
+
+            saveButton.disabled = true;
+
+            saveButton.textContent =
+                "⏳ กำลังบันทึก...";
+
+
+            message.style.color =
+                "#2563eb";
+
+            message.textContent =
+                "กำลังบันทึกข้อมูล...";
+
+
+            try {
+
+
+                await fetch(
+                    API_URL,
+                    {
+
+                        method: "POST",
+
+                        mode: "no-cors",
+
+                        headers: {
+
+                            "Content-Type":
+                                "text/plain;charset=utf-8"
+
+                        },
+
+                        body: JSON.stringify({
+
+                            month: month,
+
+                            year: year,
+
+                            water: water,
+
+                            electricity:
+                                electricity,
+
+                            patients: patients
+
+                        })
+
+                    }
+                );
+
+
+                // แสดงผลสำเร็จ
+
+                message.style.color =
+                    "green";
+
+                message.textContent =
+                    "✅ บันทึกข้อมูลลง Google Sheets แล้ว";
+
+
+                // ล้างฟอร์ม
+
+                document
+                    .getElementById("dataForm")
+                    .reset();
+
+
+                // โหลดข้อมูลใหม่
+
+                setTimeout(
+                    loadData,
+                    1000
+                );
+
+
+            } catch (error) {
+
+
+                console.error(error);
+
+
+                message.style.color =
+                    "red";
+
+                message.textContent =
+                    "❌ เกิดข้อผิดพลาดในการบันทึกข้อมูล";
+
+
+            }
+
+
+            saveButton.disabled =
+                false;
+
+            saveButton.textContent =
+                "💾 บันทึกข้อมูล";
+
+        }
+    );
+
+
+
+// =====================================================
+// เริ่มต้นระบบ
+// =====================================================
+
+loadData();
+
 
 </script>
 
 </body>
+
 </html>
 ```
