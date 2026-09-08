@@ -1,8 +1,10 @@
+```html
 <!DOCTYPE html>
 <html lang="th">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>ระบบบันทึกค่าน้ำค่าไฟ</title>
 
   <style>
@@ -89,11 +91,19 @@
       กรุณาเข้าสู่ระบบ
     </div>
 
-    <label>Username</label>
-    <input type="text" id="username" placeholder="กรอก Username">
+    <label for="username">Username</label>
+    <input
+      type="text"
+      id="username"
+      placeholder="กรอก Username"
+    >
 
-    <label>Password</label>
-    <input type="password" id="password" placeholder="กรอก Password">
+    <label for="password">Password</label>
+    <input
+      type="password"
+      id="password"
+      placeholder="กรอก Password"
+    >
 
     <button onclick="login()">เข้าสู่ระบบ</button>
 
@@ -101,5 +111,65 @@
 
   </div>
 
+
+  <script>
+
+    function login() {
+
+      // รับค่าจากช่อง Username และ Password
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      // ช่องแสดงข้อความ
+      const message = document.getElementById("message");
+
+
+      // ตรวจสอบว่ากรอกข้อมูลครบหรือไม่
+      if (username === "" || password === "") {
+
+        message.style.color = "red";
+        message.textContent = "กรุณากรอก Username และ Password";
+
+        return;
+      }
+
+
+      // Username และ Password สำหรับทดสอบ
+      const correctUsername = "admin";
+      const correctPassword = "1234";
+
+
+      // ตรวจสอบ Login
+      if (
+        username === correctUsername &&
+        password === correctPassword
+      ) {
+
+        message.style.color = "green";
+        message.textContent =
+          "เข้าสู่ระบบสำเร็จ กำลังเข้าสู่ Dashboard...";
+
+
+        // รอ 0.5 วินาที แล้วไปหน้า Dashboard
+        setTimeout(function() {
+
+          window.location.href = "dashboard.html";
+
+        }, 500);
+
+
+      } else {
+
+        message.style.color = "red";
+        message.textContent =
+          "Username หรือ Password ไม่ถูกต้อง";
+
+      }
+
+    }
+
+  </script>
+
 </body>
 </html>
+```
