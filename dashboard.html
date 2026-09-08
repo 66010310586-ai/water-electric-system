@@ -1,7 +1,6 @@
-
+```html
 <!DOCTYPE html>
 <html lang="th">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,7 +10,6 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
-
         * {
             box-sizing: border-box;
             font-family: Arial, sans-serif;
@@ -19,30 +17,27 @@
 
         body {
             margin: 0;
-            background: #f5f6fa;
-            padding: 20px;
+            background: #f2f5f9;
+            color: #333;
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 1200px;
             margin: auto;
+            padding: 30px 20px;
         }
 
         h1 {
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
 
         .card {
             background: white;
             padding: 25px;
-            margin-bottom: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .card h2 {
-            margin-top: 0;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
         }
 
         .form-grid {
@@ -51,16 +46,8 @@
             gap: 15px;
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group.full {
-            grid-column: span 2;
-        }
-
         label {
+            display: block;
             margin-bottom: 6px;
             font-weight: bold;
         }
@@ -74,63 +61,122 @@
             font-size: 16px;
         }
 
+        button {
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
         .save-btn {
             width: 100%;
             margin-top: 20px;
-            padding: 13px;
-            border: none;
-            border-radius: 8px;
             background: #2563eb;
             color: white;
-            font-size: 17px;
-            cursor: pointer;
         }
 
         .save-btn:hover {
             background: #1d4ed8;
         }
 
-        .save-btn:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
+        .logout-btn {
+            background: #dc2626;
+            color: white;
+            float: right;
         }
 
-        #formMessage {
+        .logout-btn:hover {
+            background: #b91c1c;
+        }
+
+        #message {
             text-align: center;
             margin-top: 15px;
             font-weight: bold;
         }
 
-        canvas {
-            max-height: 450px;
+        .chart-container {
+            position: relative;
+            height: 400px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background: #2563eb;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            background: #2563eb;
+            color: white;
+        }
+
+        .pagination button:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+        }
+
+        #pageInfo {
+            font-weight: bold;
         }
 
         @media (max-width: 700px) {
-
             .form-grid {
                 grid-template-columns: 1fr;
             }
 
-            .form-group.full {
-                grid-column: span 1;
+            .chart-container {
+                height: 300px;
             }
 
+            th,
+            td {
+                font-size: 13px;
+            }
         }
-
     </style>
-
 </head>
-
 
 <body>
 
 <div class="container">
 
-    <h1>📊 Dashboard ค่าน้ำและค่าไฟ</h1>
+    <button class="logout-btn" onclick="logout()">
+        ออกจากระบบ
+    </button>
 
+    <h1>💧⚡ Dashboard ค่าน้ำค่าไฟ</h1>
 
-    <!-- แบบฟอร์มบันทึกข้อมูล -->
-
+    <!-- FORM -->
     <div class="card">
 
         <h2>📝 บันทึกข้อมูล</h2>
@@ -139,19 +185,11 @@
 
             <div class="form-grid">
 
-
-                <div class="form-group">
-
-                    <label for="month">
-                        เดือน
-                    </label>
+                <div>
+                    <label for="month">เดือน</label>
 
                     <select id="month" required>
-
-                        <option value="">
-                            -- เลือกเดือน --
-                        </option>
-
+                        <option value="">-- เลือกเดือน --</option>
                         <option value="มกราคม">มกราคม</option>
                         <option value="กุมภาพันธ์">กุมภาพันธ์</option>
                         <option value="มีนาคม">มีนาคม</option>
@@ -164,17 +202,11 @@
                         <option value="ตุลาคม">ตุลาคม</option>
                         <option value="พฤศจิกายน">พฤศจิกายน</option>
                         <option value="ธันวาคม">ธันวาคม</option>
-
                     </select>
-
                 </div>
 
-
-                <div class="form-group">
-
-                    <label for="year">
-                        ปี
-                    </label>
+                <div>
+                    <label for="year">ปี</label>
 
                     <input
                         type="number"
@@ -182,451 +214,628 @@
                         placeholder="เช่น 2569"
                         required
                     >
-
                 </div>
 
-
-                <div class="form-group">
-
-                    <label for="water">
-                        💧 ค่าน้ำ
-                    </label>
+                <div>
+                    <label for="water">ค่าน้ำ (บาท)</label>
 
                     <input
                         type="number"
                         id="water"
-                        placeholder="กรอกค่าน้ำ"
                         min="0"
-                        step="0.01"
+                        placeholder="เช่น 1000"
                         required
                     >
-
                 </div>
 
-
-                <div class="form-group">
-
-                    <label for="electricity">
-                        ⚡ ค่าไฟ
-                    </label>
+                <div>
+                    <label for="electricity">ค่าไฟ (บาท)</label>
 
                     <input
                         type="number"
                         id="electricity"
-                        placeholder="กรอกค่าไฟ"
                         min="0"
-                        step="0.01"
+                        placeholder="เช่น 3000"
                         required
                     >
-
                 </div>
 
-
-                <div class="form-group full">
-
-                    <label for="patients">
-                        🏥 จำนวนผู้ป่วย
-                    </label>
+                <div>
+                    <label for="patients">จำนวนผู้ป่วย</label>
 
                     <input
                         type="number"
                         id="patients"
-                        placeholder="กรอกจำนวนผู้ป่วย"
                         min="0"
+                        placeholder="เช่น 20"
                         required
                     >
-
                 </div>
 
             </div>
 
-
             <button
                 type="submit"
                 class="save-btn"
-                id="saveButton"
             >
                 💾 บันทึกข้อมูล
             </button>
 
-
-            <div id="formMessage"></div>
-
         </form>
+
+        <div id="message"></div>
 
     </div>
 
 
-    <!-- กราฟ -->
-
+    <!-- CHART -->
     <div class="card">
 
-        <h2>
-            📈 เปรียบเทียบค่าน้ำและค่าไฟแต่ละเดือน
-        </h2>
+        <h2>📊 กราฟค่าน้ำค่าไฟ</h2>
 
-        <canvas id="utilityChart"></canvas>
+        <div class="chart-container">
+            <canvas id="myChart"></canvas>
+        </div>
+
+    </div>
+
+
+    <!-- TABLE -->
+    <div class="card">
+
+        <h2>📋 ตารางข้อมูล</h2>
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>เดือน</th>
+                        <th>ปี</th>
+                        <th>ค่าน้ำ</th>
+                        <th>ค่าไฟ</th>
+                        <th>ผู้ป่วย</th>
+                        <th>วันที่บันทึก</th>
+                    </tr>
+                </thead>
+
+                <tbody id="dataTable">
+                    <tr>
+                        <td colspan="6">
+                            กำลังโหลดข้อมูล...
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <div class="pagination">
+
+            <button
+                id="prevBtn"
+                onclick="previousPage()"
+            >
+                ◀ ก่อนหน้า
+            </button>
+
+            <span id="pageInfo">
+                หน้า 1
+            </span>
+
+            <button
+                id="nextBtn"
+                onclick="nextPage()"
+            >
+                ถัดไป ▶
+            </button>
+
+        </div>
 
     </div>
 
 </div>
 
 
-
 <script>
 
+    // ==========================================
+    // URL GOOGLE APPS SCRIPT
+    // ==========================================
 
-// =====================================================
-// Google Apps Script Web App URL
-// =====================================================
-
-const API_URL = "https://script.google.com/macros/s/AKfycbyIS-MaYfKEO5OoSFhxqVDaPkmthAiwt0j4WsFajpzd80tKsKLMHiD26pyZmfQcE7F-wQ/exec";
-
-
-
-// =====================================================
-// ตัวแปรกราฟ
-// =====================================================
-
-let utilityChart;
+    const API_URL =
+        "https://script.google.com/macros/s/AKfycbyIS-MaYfKEO5OoSFhxqVDaPkmthAiwt0j4WsFajpzd80tKsKLMHiD26pyZmfQcE7F-wQ/exec";
 
 
+    // ==========================================
+    // ตัวแปร
+    // ==========================================
 
-// =====================================================
-// โหลดข้อมูลจาก Google Sheets
-// =====================================================
+    let allData = [];
 
-async function loadData() {
+    let currentPage = 1;
 
-    try {
+    const rowsPerPage = 5;
 
-        const response =
-            await fetch(API_URL);
-
-        const data =
-            await response.json();
+    let myChart = null;
 
 
-        console.log("ข้อมูลจาก Google Sheets:", data);
+    // ==========================================
+    // โหลดข้อมูล
+    // ==========================================
+
+    function loadData() {
+
+        fetch(API_URL)
+
+            .then(response => response.text())
+
+            .then(text => {
+
+                try {
+
+                    const data = JSON.parse(text);
+
+                    if (Array.isArray(data)) {
+
+                        allData = data.slice(1);
+
+                        displayTable();
+
+                        createChart();
+
+                    } else {
+
+                        showEmptyTable();
+
+                    }
+
+                } catch (error) {
+
+                    console.log("ข้อมูลจาก API:", text);
+
+                    showEmptyTable();
+
+                }
+
+            })
+
+            .catch(error => {
+
+                console.error(error);
+
+                showEmptyTable();
+
+            });
+
+    }
 
 
-        // ถ้ายังไม่มีข้อมูล
+    // ==========================================
+    // แสดงตาราง
+    // ==========================================
 
-        if (!data || data.length <= 1) {
+    function displayTable() {
 
-            createChart([], [], []);
+        const table =
+            document.getElementById("dataTable");
+
+        table.innerHTML = "";
+
+        if (allData.length === 0) {
+
+            showEmptyTable();
 
             return;
         }
 
 
-        // ตัดหัวตารางออก
+        const start =
+            (currentPage - 1) * rowsPerPage;
 
-        const rows =
-            data.slice(1);
+        const end =
+            start + rowsPerPage;
 
-
-        const months = [];
-
-        const water = [];
-
-        const electricity = [];
+        const pageData =
+            allData.slice(start, end);
 
 
-        rows.forEach(function(row) {
+        pageData.forEach(row => {
 
-            if (row.length >= 6) {
+            const tr =
+                document.createElement("tr");
 
-                months.push(
-                    row[1] + " " + row[2]
-                );
+            tr.innerHTML = `
 
-                water.push(
-                    Number(row[3]) || 0
-                );
+                <td>${row[1] || ""}</td>
 
-                electricity.push(
-                    Number(row[4]) || 0
-                );
+                <td>${row[2] || ""}</td>
 
-            }
+                <td>${formatNumber(row[3])}</td>
+
+                <td>${formatNumber(row[4])}</td>
+
+                <td>${row[5] || ""}</td>
+
+                <td>${formatDate(row[6])}</td>
+
+            `;
+
+            table.appendChild(tr);
 
         });
 
 
-        createChart(
-            months,
-            water,
-            electricity
-        );
-
-
-    } catch (error) {
-
-        console.error(
-            "ไม่สามารถโหลดข้อมูล:",
-            error
-        );
-
-        createChart([], [], []);
-
-    }
-
-}
-
-
-
-// =====================================================
-// สร้างกราฟ
-// =====================================================
-
-function createChart(
-    months,
-    water,
-    electricity
-) {
-
-
-    const ctx =
-        document.getElementById(
-            "utilityChart"
-        );
-
-
-    if (utilityChart) {
-
-        utilityChart.destroy();
+        updatePagination();
 
     }
 
 
-    utilityChart =
-        new Chart(ctx, {
+    // ==========================================
+    // ตารางว่าง
+    // ==========================================
 
-            type: "line",
+    function showEmptyTable() {
 
-            data: {
+        const table =
+            document.getElementById("dataTable");
 
-                labels: months,
+        table.innerHTML = `
 
-                datasets: [
+            <tr>
+                <td colspan="6">
+                    ยังไม่มีข้อมูล
+                </td>
+            </tr>
 
-                    {
+        `;
 
-                        label: "ค่าน้ำ",
+        updatePagination();
 
-                        data: water,
-
-                        tension: 0.3
-
-                    },
-
-                    {
-
-                        label: "ค่าไฟ",
-
-                        data: electricity,
-
-                        tension: 0.3
-
-                    }
-
-                ]
-
-            },
+    }
 
 
-            options: {
+    // ==========================================
+    // Pagination
+    // ==========================================
 
-                responsive: true,
+    function updatePagination() {
 
-                scales: {
+        const totalPages =
+            Math.max(
+                1,
+                Math.ceil(
+                    allData.length / rowsPerPage
+                )
+            );
 
-                    y: {
 
-                        beginAtZero: true
+        document.getElementById("pageInfo")
+            .textContent =
+            "หน้า " +
+            currentPage +
+            " / " +
+            totalPages;
+
+
+        document.getElementById("prevBtn")
+            .disabled =
+            currentPage <= 1;
+
+
+        document.getElementById("nextBtn")
+            .disabled =
+            currentPage >= totalPages;
+
+    }
+
+
+    function previousPage() {
+
+        if (currentPage > 1) {
+
+            currentPage--;
+
+            displayTable();
+
+        }
+
+    }
+
+
+    function nextPage() {
+
+        const totalPages =
+            Math.ceil(
+                allData.length / rowsPerPage
+            );
+
+
+        if (currentPage < totalPages) {
+
+            currentPage++;
+
+            displayTable();
+
+        }
+
+    }
+
+
+    // ==========================================
+    // สร้างกราฟ
+    // ==========================================
+
+    function createChart() {
+
+        const labels = [];
+
+        const waterData = [];
+
+        const electricityData = [];
+
+
+        allData.forEach(row => {
+
+            labels.push(
+                (row[1] || "") +
+                " " +
+                (row[2] || "")
+            );
+
+            waterData.push(
+                Number(row[3]) || 0
+            );
+
+            electricityData.push(
+                Number(row[4]) || 0
+            );
+
+        });
+
+
+        const ctx =
+            document
+                .getElementById("myChart")
+                .getContext("2d");
+
+
+        if (myChart) {
+
+            myChart.destroy();
+
+        }
+
+
+        myChart =
+            new Chart(ctx, {
+
+                type: "line",
+
+                data: {
+
+                    labels: labels,
+
+                    datasets: [
+
+                        {
+                            label: "ค่าน้ำ",
+
+                            data: waterData,
+
+                            borderWidth: 2,
+
+                            tension: 0.3
+                        },
+
+                        {
+                            label: "ค่าไฟ",
+
+                            data: electricityData,
+
+                            borderWidth: 2,
+
+                            tension: 0.3
+                        }
+
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    scales: {
+
+                        y: {
+
+                            beginAtZero: true
+
+                        }
 
                     }
 
                 }
 
-            }
+            });
 
-        });
-
-}
+    }
 
 
+    // ==========================================
+    // บันทึกข้อมูล
+    // ==========================================
 
-// =====================================================
-// บันทึกข้อมูลลง Google Sheets
-// =====================================================
-
-document
-    .getElementById("dataForm")
-    .addEventListener(
-        "submit",
-        async function(event) {
-
+    document
+        .getElementById("dataForm")
+        .addEventListener("submit", function(event) {
 
             event.preventDefault();
 
 
             const month =
-                document.getElementById(
-                    "month"
-                ).value;
-
+                document.getElementById("month").value;
 
             const year =
-                document.getElementById(
-                    "year"
-                ).value;
-
+                document.getElementById("year").value;
 
             const water =
-                document.getElementById(
-                    "water"
-                ).value;
-
+                document.getElementById("water").value;
 
             const electricity =
-                document.getElementById(
-                    "electricity"
-                ).value;
-
+                document.getElementById("electricity").value;
 
             const patients =
-                document.getElementById(
-                    "patients"
-                ).value;
+                document.getElementById("patients").value;
 
 
             const message =
-                document.getElementById(
-                    "formMessage"
-                );
+                document.getElementById("message");
 
 
-            const saveButton =
-                document.getElementById(
-                    "saveButton"
-                );
-
-
-            // แสดงสถานะกำลังบันทึก
-
-            saveButton.disabled = true;
-
-            saveButton.textContent =
-                "⏳ กำลังบันทึก...";
-
-
-            message.style.color =
-                "#2563eb";
+            message.style.color = "#2563eb";
 
             message.textContent =
                 "กำลังบันทึกข้อมูล...";
 
 
-            try {
+            fetch(API_URL, {
 
+                method: "POST",
 
-                await fetch(
-                    API_URL,
-                    {
+                mode: "no-cors",
 
-                        method: "POST",
+                headers: {
 
-                        mode: "no-cors",
+                    "Content-Type":
+                        "text/plain;charset=utf-8"
 
-                        headers: {
+                },
 
-                            "Content-Type":
-                                "text/plain;charset=utf-8"
+                body: JSON.stringify({
 
-                        },
+                    month: month,
 
-                        body: JSON.stringify({
+                    year: year,
 
-                            month: month,
+                    water: water,
 
-                            year: year,
+                    electricity: electricity,
 
-                            water: water,
+                    patients: patients
 
-                            electricity:
-                                electricity,
+                })
 
-                            patients: patients
+            })
 
-                        })
+            .then(() => {
 
-                    }
-                );
-
-
-                // แสดงผลสำเร็จ
-
-                message.style.color =
-                    "green";
+                message.style.color = "green";
 
                 message.textContent =
-                    "✅ บันทึกข้อมูลลง Google Sheets แล้ว";
+                    "✅ บันทึกข้อมูลสำเร็จ";
 
-
-                // ล้างฟอร์ม
 
                 document
                     .getElementById("dataForm")
                     .reset();
 
 
-                // โหลดข้อมูลใหม่
+                setTimeout(function() {
 
-                setTimeout(
-                    loadData,
-                    1000
-                );
+                    loadData();
 
+                }, 1000);
 
-            } catch (error) {
+            })
 
+            .catch(error => {
 
                 console.error(error);
 
-
-                message.style.color =
-                    "red";
+                message.style.color = "red";
 
                 message.textContent =
-                    "❌ เกิดข้อผิดพลาดในการบันทึกข้อมูล";
+                    "❌ ไม่สามารถบันทึกข้อมูลได้";
+
+            });
+
+        });
 
 
-            }
+    // ==========================================
+    // จัดรูปแบบตัวเลข
+    // ==========================================
 
+    function formatNumber(value) {
 
-            saveButton.disabled =
-                false;
+        if (
+            value === undefined ||
+            value === null ||
+            value === ""
+        ) {
 
-            saveButton.textContent =
-                "💾 บันทึกข้อมูล";
+            return "0";
 
         }
-    );
+
+        return Number(value)
+            .toLocaleString("th-TH");
+
+    }
 
 
+    // ==========================================
+    // จัดรูปแบบวันที่
+    // ==========================================
 
-// =====================================================
-// เริ่มต้นระบบ
-// =====================================================
+    function formatDate(value) {
 
-loadData();
+        if (!value) {
 
+            return "";
+
+        }
+
+        const date =
+            new Date(value);
+
+        if (isNaN(date.getTime())) {
+
+            return value;
+
+        }
+
+        return date.toLocaleDateString("th-TH");
+
+    }
+
+
+    // ==========================================
+    // Logout
+    // ==========================================
+
+    function logout() {
+
+        window.location.href =
+            "index.html";
+
+    }
+
+
+    // ==========================================
+    // เริ่มต้นระบบ
+    // ==========================================
+
+    loadData();
 
 </script>
 
 </body>
-
 </html>
 ```
