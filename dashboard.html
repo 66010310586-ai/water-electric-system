@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-```
 <title>Dashboard ค่าน้ำค่าไฟ</title>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -175,7 +174,6 @@
         }
     }
 </style>
-```
 
 </head>
 
@@ -183,7 +181,6 @@
 
 <div class="container">
 
-```
 <button class="logout-btn" onclick="logout()">
     ออกจากระบบ
 </button>
@@ -253,7 +250,7 @@
             </div>
 
             <div>
-                <label for="patients">จำนวนผู้ใช้น้ำใช้ไฟ</label>
+                <label for="patients">จำนวนผู้ป่วย</label>
 
                 <input
                     type="number"
@@ -350,7 +347,6 @@
     </div>
 
 </div>
-```
 
 </div>
 
@@ -540,214 +536,4 @@ function createChart() {
 
     const ctx =
         document
-            .getElementById("myChart")
-            .getContext("2d");
-
-    if (myChart) {
-
-        myChart.destroy();
-
-    }
-
-    myChart =
-        new Chart(ctx, {
-
-            type: "line",
-
-            data: {
-
-                labels: labels,
-
-                datasets: [
-
-                    {
-                        label: "ค่าน้ำ",
-                        data: waterData,
-                        borderWidth: 2,
-                        tension: 0.3
-                    },
-
-                    {
-                        label: "ค่าไฟ",
-                        data: electricityData,
-                        borderWidth: 2,
-                        tension: 0.3
-                    }
-
-                ]
-
-            },
-
-            options: {
-
-                responsive: true,
-
-                maintainAspectRatio: false,
-
-                scales: {
-
-                    y: {
-                        beginAtZero: true
-                    }
-
-                }
-
-            }
-
-        });
-
-}
-
-
-/* ส่งข้อมูล + Honeypot */
-
-document
-    .getElementById("dataForm")
-    .addEventListener("submit", function(event) {
-
-        event.preventDefault();
-
-        const message =
-            document.getElementById("message");
-
-
-        /* ตรวจสอบ Honeypot */
-
-        const honeypot =
-            document.getElementById("website").value;
-
-        if (honeypot !== "") {
-
-            message.style.color = "red";
-
-            message.textContent =
-                "❌ ตรวจพบการส่งข้อมูลที่ไม่ถูกต้อง";
-
-            return;
-
-        }
-
-
-        const data = {
-
-            month:
-                document.getElementById("month").value,
-
-            year:
-                document.getElementById("year").value,
-
-            water:
-                document.getElementById("water").value,
-
-            electricity:
-                document.getElementById("electricity").value,
-
-            patients:
-                document.getElementById("patients").value
-
-        };
-
-
-        message.style.color = "#2563eb";
-
-        message.textContent =
-            "กำลังบันทึกข้อมูล...";
-
-
-        fetch(API_URL, {
-
-            method: "POST",
-
-            mode: "no-cors",
-
-            headers: {
-
-                "Content-Type":
-                    "text/plain;charset=utf-8"
-
-            },
-
-            body:
-                JSON.stringify(data)
-
-        })
-
-        .then(() => {
-
-            message.style.color =
-                "green";
-
-            message.textContent =
-                "✅ บันทึกข้อมูลสำเร็จ";
-
-            document
-                .getElementById("dataForm")
-                .reset();
-
-            setTimeout(
-                loadData,
-                1000
-            );
-
-        })
-
-        .catch(error => {
-
-            console.error(error);
-
-            message.style.color =
-                "red";
-
-            message.textContent =
-                "❌ ไม่สามารถบันทึกข้อมูลได้";
-
-        });
-
-    });
-
-
-/* จัดรูปแบบตัวเลข */
-
-function formatNumber(value) {
-
-    return Number(value || 0)
-        .toLocaleString("th-TH");
-
-}
-
-
-/* จัดรูปแบบวันที่ */
-
-function formatDate(value) {
-
-    if (!value) return "";
-
-    const date = new Date(value);
-
-    if (isNaN(date.getTime())) {
-        return value;
-    }
-
-    return date.toLocaleDateString("th-TH");
-
-}
-
-
-/* Logout */
-
-function logout() {
-
-    window.location.href =
-        "index.html";
-
-}
-
-
-/* เริ่มต้น */
-
-loadData();
-
-</script>
-
-</body>
-</html>
+            .getElement
