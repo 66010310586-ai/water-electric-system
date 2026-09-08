@@ -1,187 +1,233 @@
+```html
 <!DOCTYPE html>
-
 <html lang="th">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>ระบบบันทึกค่าน้ำค่าไฟ</title>
+    <title>ระบบบันทึกค่าน้ำค่าไฟ</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      font-family: Arial, sans-serif;
-    }
+    <style>
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      background: #f2f5f9;
-    }
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
 
-    .login-box {
-      width: 360px;
-      background: white;
-      padding: 35px;
-      border-radius: 15px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-    }
+        body {
+            margin: 0;
+            min-height: 100vh;
 
-    h1 {
-      text-align: center;
-      margin: 0 0 10px 0;
-    }
+            display: flex;
+            justify-content: center;
+            align-items: center;
 
-    .icon {
-      font-size: 45px;
-      text-align: center;
-      margin-bottom: 10px;
-    }
+            background: #f2f5f9;
+        }
 
-    .subtitle {
-      text-align: center;
-      color: #777;
-      margin-bottom: 25px;
-    }
+        .login-box {
 
-    label {
-      display: block;
-      margin-top: 15px;
-      margin-bottom: 5px;
-      font-weight: bold;
-    }
+            width: 360px;
 
-    input {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 16px;
-    }
+            background: white;
 
-    input:focus {
-      outline: none;
-      border-color: #2563eb;
-    }
+            padding: 35px;
 
-    button {
-      width: 100%;
-      margin-top: 25px;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      background: #2563eb;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
+            border-radius: 15px;
 
-    button:hover {
-      background: #1d4ed8;
-    }
+            box-shadow:
+                0 5px 20px rgba(0,0,0,0.15);
+        }
 
-    #message {
-      text-align: center;
-      margin-top: 15px;
-      min-height: 20px;
-      color: red;
-    }
-  </style>
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+
+            text-align: center;
+
+            color: #777;
+
+            margin-bottom: 25px;
+        }
+
+        label {
+
+            display: block;
+
+            margin-top: 15px;
+
+            margin-bottom: 5px;
+
+            font-weight: bold;
+        }
+
+        input {
+
+            width: 100%;
+
+            padding: 12px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 8px;
+
+            font-size: 16px;
+        }
+
+        button {
+
+            width: 100%;
+
+            margin-top: 25px;
+
+            padding: 12px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #2563eb;
+
+            color: white;
+
+            font-size: 16px;
+
+            cursor: pointer;
+        }
+
+        button:hover {
+
+            background: #1d4ed8;
+        }
+
+        #message {
+
+            text-align: center;
+
+            margin-top: 15px;
+
+            font-weight: bold;
+        }
+
+    </style>
 
 </head>
 
+
 <body>
 
-  <div class="login-box">
+    <div class="login-box">
 
-```
-<div class="icon">💧⚡</div>
+        <h1>💧⚡</h1>
 
-<h1>ระบบบันทึกค่าน้ำค่าไฟ</h1>
+        <h1>
+            ระบบบันทึกค่าน้ำค่าไฟ
+        </h1>
 
-<div class="subtitle">
-  กรุณาเข้าสู่ระบบ
-</div>
-
-<label for="username">Username</label>
-<input
-  type="text"
-  id="username"
-  placeholder="กรอก Username"
->
-
-<label for="password">Password</label>
-<input
-  type="password"
-  id="password"
-  placeholder="กรอก Password"
->
-
-<button onclick="login()">
-  เข้าสู่ระบบ
-</button>
-
-<div id="message"></div>
-```
-
-  </div>
-
-  <script>
-
-    function login() {
-
-      // รับค่าจากช่อง Username และ Password
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value.trim();
-
-      const message = document.getElementById("message");
+        <div class="subtitle">
+            กรุณาเข้าสู่ระบบ
+        </div>
 
 
-      // ตรวจสอบว่ากรอกข้อมูลครบหรือไม่
-      if (username === "" || password === "") {
+        <label for="username">
+            Username
+        </label>
 
-        message.textContent = "กรุณากรอก Username และ Password";
-
-        return;
-      }
-
-
-      // Username และ Password สำหรับทดสอบ
-      const correctUsername = "admin";
-      const correctPassword = "1234";
+        <input
+            type="text"
+            id="username"
+            placeholder="กรอก Username"
+        >
 
 
-      // ตรวจสอบ Login
-      if (
-        username === correctUsername &&
-        password === correctPassword
-      ) {
+        <label for="password">
+            Password
+        </label>
 
-        message.style.color = "green";
-        message.textContent = "เข้าสู่ระบบสำเร็จ";
-
-
-        // รอเล็กน้อยแล้วไปหน้า Dashboard
-        setTimeout(function() {
-
-          window.location.href = "dashboard.html";
-
-        }, 500);
+        <input
+            type="password"
+            id="password"
+            placeholder="กรอก Password"
+        >
 
 
-      } else {
+        <button onclick="login()">
+            เข้าสู่ระบบ
+        </button>
 
-        message.style.color = "red";
-        message.textContent = "Username หรือ Password ไม่ถูกต้อง";
 
-      }
+        <div id="message"></div>
 
-    }
+    </div>
 
-  </script>
+
+    <script>
+
+        function login() {
+
+            const username =
+                document.getElementById("username").value.trim();
+
+            const password =
+                document.getElementById("password").value.trim();
+
+            const message =
+                document.getElementById("message");
+
+
+            // ตรวจสอบข้อมูลว่าง
+
+            if (username === "" || password === "") {
+
+                message.style.color = "red";
+
+                message.textContent =
+                    "กรุณากรอก Username และ Password";
+
+                return;
+            }
+
+
+            // Username และ Password สำหรับทดสอบ
+
+            if (
+                username === "admin" &&
+                password === "1234"
+            ) {
+
+                message.style.color = "green";
+
+                message.textContent =
+                    "เข้าสู่ระบบสำเร็จ";
+
+
+                // ไปหน้า Dashboard
+
+                setTimeout(function() {
+
+                    window.location.href =
+                        "dashboard.html";
+
+                }, 500);
+
+
+            } else {
+
+                message.style.color = "red";
+
+                message.textContent =
+                    "Username หรือ Password ไม่ถูกต้อง";
+            }
+
+        }
+
+    </script>
 
 </body>
+
 </html>
+```
