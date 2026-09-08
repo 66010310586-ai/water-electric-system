@@ -1,5 +1,5 @@
-```html
 <!DOCTYPE html>
+
 <html lang="th">
 <head>
   <meta charset="UTF-8">
@@ -32,6 +32,12 @@
 
     h1 {
       text-align: center;
+      margin: 0 0 10px 0;
+    }
+
+    .icon {
+      font-size: 45px;
+      text-align: center;
       margin-bottom: 10px;
     }
 
@@ -45,6 +51,7 @@
       display: block;
       margin-top: 15px;
       margin-bottom: 5px;
+      font-weight: bold;
     }
 
     input {
@@ -53,6 +60,11 @@
       border: 1px solid #ccc;
       border-radius: 8px;
       font-size: 16px;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #2563eb;
     }
 
     button {
@@ -74,43 +86,48 @@
     #message {
       text-align: center;
       margin-top: 15px;
+      min-height: 20px;
       color: red;
     }
   </style>
+
 </head>
 
 <body>
 
   <div class="login-box">
 
-    <h1>💧⚡</h1>
+```
+<div class="icon">💧⚡</div>
 
-    <h1>ระบบบันทึกค่าน้ำค่าไฟ</h1>
+<h1>ระบบบันทึกค่าน้ำค่าไฟ</h1>
 
-    <div class="subtitle">
-      กรุณาเข้าสู่ระบบ
-    </div>
+<div class="subtitle">
+  กรุณาเข้าสู่ระบบ
+</div>
 
-    <label for="username">Username</label>
-    <input
-      type="text"
-      id="username"
-      placeholder="กรอก Username"
-    >
+<label for="username">Username</label>
+<input
+  type="text"
+  id="username"
+  placeholder="กรอก Username"
+>
 
-    <label for="password">Password</label>
-    <input
-      type="password"
-      id="password"
-      placeholder="กรอก Password"
-    >
+<label for="password">Password</label>
+<input
+  type="password"
+  id="password"
+  placeholder="กรอก Password"
+>
 
-    <button onclick="login()">เข้าสู่ระบบ</button>
+<button onclick="login()">
+  เข้าสู่ระบบ
+</button>
 
-    <div id="message"></div>
+<div id="message"></div>
+```
 
   </div>
-
 
   <script>
 
@@ -120,14 +137,12 @@
       const username = document.getElementById("username").value.trim();
       const password = document.getElementById("password").value.trim();
 
-      // ช่องแสดงข้อความ
       const message = document.getElementById("message");
 
 
       // ตรวจสอบว่ากรอกข้อมูลครบหรือไม่
       if (username === "" || password === "") {
 
-        message.style.color = "red";
         message.textContent = "กรุณากรอก Username และ Password";
 
         return;
@@ -146,11 +161,10 @@
       ) {
 
         message.style.color = "green";
-        message.textContent =
-          "เข้าสู่ระบบสำเร็จ กำลังเข้าสู่ Dashboard...";
+        message.textContent = "เข้าสู่ระบบสำเร็จ";
 
 
-        // รอ 0.5 วินาที แล้วไปหน้า Dashboard
+        // รอเล็กน้อยแล้วไปหน้า Dashboard
         setTimeout(function() {
 
           window.location.href = "dashboard.html";
@@ -161,8 +175,7 @@
       } else {
 
         message.style.color = "red";
-        message.textContent =
-          "Username หรือ Password ไม่ถูกต้อง";
+        message.textContent = "Username หรือ Password ไม่ถูกต้อง";
 
       }
 
@@ -172,4 +185,3 @@
 
 </body>
 </html>
-```
